@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .wrapper{
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            margin:auto;
+            width: 50%;
+            border-radius: 3px;
+            padding: 30px;
+            background-color: #f7f7f7;
+        }
+        input[type="text"]{
+            border-style: grey;
+        }
+        .lose, .equal, .gameover{
+            background-color: #f83e4b;
+            width: 50%;
+            align-items: center;
+            padding: 10px;
+            margin: 10px;
+            position:relative;
+            left: 160px;
+            height: 200px;
+            border: 2px solid black;
+            color: white;
+        }
+        .play{
+            margin:-7% auto;
+            background-color: white;
+            color: black;
+            border: 1px solid;
+            box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.493);
+            width: 30%;
+            padding: 5px;
+        }
+        a{
+            color: black;
+            text-decoration: none;
+            margin: 10px;
+        }
+        input{
+            margin: 10px;
+            padding: 10px;
+        }
+        .wrong{
+            margin: 10% auto;
+        }
+        .btn{
+            background-color: #606470;
+            border-style: none;
+            border-radius: 3px;
+            color: white;
+            box-shadow: 3px 3px 3px rgba(128, 128, 128, 0.484);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Welcome to the Great Number Game!</h1>
+        <h3>I am thinking of a number between 1 to 100 <br> Take a guess!</h3>
+
+        {% if request.session.number != 0 %}
+        {% if request.session.counter == 5 and request.session.number != request.session.random %}
+            <div class="gameover" style="background-color: #fec100;">
+                <h1>Game over! <br><span style='font-size:50px;'>&#128148;</span></h1>
+                    <a href="/delete"><div class="play">Try again!</div> </a>
+            </div>
+        {% elif request.session.random == request.session.number %}
+            <div class="equal" style="background-color: #25e9be;">
+                <h1>{{request.session.number}} was the number <br> <span style='font-size:50px;'>&#127881;</span></h1>
+                <a href="/delete"><div class="play">Play again!</div> </a>
+            </div>
+        {% elif request.session.random < request.session.number %}
+            <div class="lose">
+                <h1 class="wrong">Too high! <br> <span style='font-size:50px;'>&#128551;</span></h1>
+            </div>
+            {% elif request.session.random > request.session.number %}
+            <div class="lose">
+                <h1 class="wrong">Too low! <br> <span style='font-size:50px;'>&#128553;</span></h1>
+            </div>
+            {% endif %}
+            {% endif %}
+
+        {% if request.session.random != request.session.number %}
+        {% if request.session.counter != 5 %}
+        <form action="/guess" method="POST">
+            {% csrf_token %}
+                <input type="text" name="number" placeholder="Enter a number" required>
+            <div class="submit">
+                <input type="submit" class="btn" name="submit" value="submit">
+            </div>
+        </form>
+        <p class="attempt">attempt(s): {{request.session.counter}}</p>
+        <div>
+        {% if request.session.number != null %}
+        <a href="/delete">&#128073 Restart &#128072</a>
+        </div>
+        {% endif %}
+        {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
